@@ -2,16 +2,18 @@ package captcha
 
 import "github.com/mojocn/base64Captcha"
 
-type configJsonBody struct {
-	Id            string
-	CaptchaType   string
-	VerifyValue   string
-	DriverAudio   *base64Captcha.DriverAudio
-	DriverString  *base64Captcha.DriverString
-	DriverChinese *base64Captcha.DriverChinese
-	DriverMath    *base64Captcha.DriverMath
-	DriverDigit   *base64Captcha.DriverDigit
+/*
+type configjsonbody struct {
+	id            string
+	captchatype   string
+	verifyvalue   string
+	driveraudio   *base64captcha.driveraudio
+	driverstring  *base64captcha.driverstring
+	driverchinese *base64captcha.driverchinese
+	drivermath    *base64captcha.drivermath
+	driverdigit   *base64captcha.driverdigit
 }
+*/
 
 //var driver base64Captcha.Driver
 var store = rdsMemStore

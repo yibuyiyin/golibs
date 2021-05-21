@@ -16,7 +16,7 @@ var once sync.Once
 
 func Init() {
 	once.Do(func() {
-		if common.Config.Init().GetStorageDriver() == common2.DriverMysql {
+		if common.Config.Init().GetStorageDriver() == common.DriverMysql {
 			Conn = mysql.NewMysql().Connect().Conn
 		} else {
 			Conn = sqlite.NewSqlite().Connect().Conn

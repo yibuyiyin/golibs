@@ -3,15 +3,11 @@ module gitee.com/itsos/golibs
 go 1.15
 
 require (
-	github.com/circonus-labs/circonus-gometrics v2.3.1+incompatible // indirect
-	github.com/circonus-labs/circonusllhist v0.2.1 // indirect
-	github.com/go-kit/kit v0.10.0 // indirect
-	github.com/hashicorp/go-retryablehttp v0.7.0 // indirect
+	github.com/go-redis/redis/v8 v8.8.3
+	github.com/go-sql-driver/mysql v1.4.1
+	github.com/go-xorm/xorm v0.7.9
+	github.com/mattn/go-sqlite3 v1.14.7
+	github.com/mojocn/base64Captcha v1.3.4
 	github.com/spf13/viper v1.7.1
-	github.com/tmc/grpc-websocket-proxy v0.0.0-20201229170055-e5319fda7802 // indirect
-	github.com/tv42/httpunix v0.0.0-20191220191345-2ba4b9c3382c // indirect
+	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb
 )
-
-replace github.com/circonus-labs/circonusllhist v0.2.1 => github.com/openhistogram/circonusllhist v0.2.1
-
-replace github.com/pressly/chi v1.5.4 => github.com/go-chi/chi v1.5.4
