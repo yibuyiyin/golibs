@@ -1,3 +1,11 @@
+# 环境 dev / test / product
+active: dev
+domain: demo.com
+scheme: http
+port: 8080
+
+swagger:
+  port: 9090
 
 # 存储方案二选一， mysql or sqlite3
 storage-driver: mysql
@@ -5,10 +13,18 @@ storage-driver: mysql
 mysql:
   master:
     user: root
-    password: mysql123
+    password: password
     host: 127.0.0.1
     port: 3306
-    database: ucenter
+    database: demo
+    charset: utf8mb4
+    timezone: Asia/Shanghai
+  slave1:
+    user: root
+    password: password
+    host: 127.0.0.1
+    port: 3307
+    database: demo
     charset: utf8mb4
     timezone: Asia/Shanghai
 

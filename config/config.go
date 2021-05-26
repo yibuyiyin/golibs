@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"gitee.com/itsos/golibs/core"
 	"gitee.com/itsos/golibs/global/variable"
 	"github.com/spf13/viper"
 )
@@ -37,7 +36,7 @@ func (c *config) SetPath(cPath string) {
 }
 
 func (c *config) GetFile(cFile string) string {
-	return fmt.Sprintf("%s%s/%s", c.GetPath(), core.GetEnviron(), cFile)
+	return fmt.Sprintf("%s/%s", c.GetPath(), cFile)
 }
 
 func (c *config) GetName() string {
