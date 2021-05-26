@@ -5,19 +5,7 @@ import (
 	"os"
 )
 
-func GetEnviron() string {
-	env, ok := os.LookupEnv(consts.GoEnvironKey)
-	if ok == false {
-		env = "dev"
-	}
-	return env
-}
-
-func IsProductEnv() bool {
-	return GetEnviron() == consts.EnvProduct
-}
-
-func GetTestBasePath() string {
-	env, _ := os.LookupEnv(consts.TestBasePathKey)
+func GetDevBasePath() string {
+	env, _ := os.LookupEnv(consts.DevBasePathKey)
 	return env
 }

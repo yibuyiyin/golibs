@@ -1,22 +1,22 @@
 package variable
 
 import (
-	core2 "gitee.com/itsos/golibs/core"
-	consts2 "gitee.com/itsos/golibs/global/consts"
+	"gitee.com/itsos/golibs/core"
+	"gitee.com/itsos/golibs/global/consts"
 	"os"
 	"strings"
 )
 
 var (
-	// BasePath 项目根目录
-	BasePath = core2.GetTestBasePath()
+	// BasePath 开发项目根目录
+	BasePath = core.GetDevBasePath()
 )
 
 func init() {
 	if dir, err := os.Getwd(); err == nil {
 		if len(os.Args) > 1 && strings.HasPrefix(os.Args[1], "-test") {
 			if BasePath == "" {
-				panic("Environment variable [" + consts2.TestBasePathKey + "] not set")
+				panic("Environment variable [" + consts.DevBasePathKey + "] not set")
 			}
 		} else {
 			BasePath = dir

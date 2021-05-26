@@ -1,11 +1,8 @@
 package consts
 
 const (
-	// TestBasePathKey 测试用例，项目根目录
-	TestBasePathKey string = "TestBasePath"
-
-	// GoEnvironKey 项目运行环境key
-	GoEnvironKey string = "GoEnviron"
+	// DevBasePathKey 开发环境项目根目录，ide或系统上设置环境变量并制定目录 如：export DEVBASEPATH=/project/golibs
+	DevBasePathKey string = "DEVBASEPATH"
 
 	// EnvProduct 生产环境
 	EnvProduct string = "product"
