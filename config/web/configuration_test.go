@@ -8,9 +8,10 @@
    See the Mulan PSL v2 for more details.
 */
 
-package config
+package web
 
 import (
+	_ "gitee.com/itsos/golibs/tests"
 	"testing"
 )
 

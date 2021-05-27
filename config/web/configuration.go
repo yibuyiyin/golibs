@@ -8,7 +8,7 @@
    See the Mulan PSL v2 for more details.
 */
 
-package config
+package web
 
 import (
 	"github.com/spf13/viper"
@@ -70,6 +70,8 @@ func (c Configuration) GetSwaggerPort() string {
 func (c Configuration) GetScheme() string {
 	return viper.GetString(c.Scheme)
 }
+
+var _ ConfigurationReadOnly = (*Configuration)(nil)
 
 func CovertConfiguration() *Configuration {
 	c := &Configuration{}
