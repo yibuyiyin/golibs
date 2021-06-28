@@ -2,7 +2,9 @@ package mysql
 
 import (
 	"fmt"
-	common2 "gitee.com/itsos/golibs/db/common"
+	"gitee.com/itsos/golibs/config/web"
+	"gitee.com/itsos/golibs/db/common"
+	"gitee.com/itsos/golibs/global/consts"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"time"
@@ -16,36 +18,39 @@ type mysql struct{}
 func (m *mysql) GetDsn() string {
 	return fmt.Sprintf(
 		"%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=true&loc=Local",
-		common2.Config.GetUser(),
-		common2.Config.GetPassword(),
-		common2.Config.GetHost(),
-		common2.Config.GetPort(),
-		common2.Config.GetDatabase(),
-		common2.Config.GetCharset(),
+		common.Config.GetUser(),
+		common.Config.GetPassword(),
+		common.Config.GetHost(),
+		common.Config.GetPort(),
+		common.Config.GetDatabase(),
+		common.Config.GetCharset(),
 	)
 }
 
 const driver = "mysql"
 
-func (m *mysql) Connect() *common2.Dbs {
+func (m *mysql) Connect() *common.Dbs {
 	var dataSourceNameSlice []string
-	common2.Config.UseMysql()
-	modes := []string{common2.Master, common2.Slave1, common2.Slave2, common2.Slave3}
+	common.Config.UseMysql()
+	modes := []string{common.Master, common.Slave1, common.Slave2, common.Slave3}
 	for _, mode := range modes {
-		common2.Config.SetMode(mode)
-		if common2.Config.GetHost() != "" {
+		common.Config.SetMode(mode)
+		if common.Config.GetHost() != "" {
 			dataSourceNameSlice = append(dataSourceNameSlice, m.GetDsn())
 		}
 	}
 	engine, err := xorm.NewEngineGroup(driver, dataSourceNameSlice)
-	engine.TZLocation, _ = time.LoadLocation(common2.Config.GetTimezone())
-	engine.DatabaseTZ, _ = time.LoadLocation(common2.Config.GetTimezone())
+	engine.TZLocation, _ = time.LoadLocation(common.Config.GetTimezone())
+	engine.DatabaseTZ, _ = time.LoadLocation(common.Config.GetTimezone())
+	if web.Config.GetActive() == consts.EnvDev {
+		engine.ShowSQL(true)
+	}
 	if err != nil {
 		panic(err)
 	}
-	return &common2.Dbs{Conn: engine}
+	return &common.Dbs{Conn: engine}
 }
 
-func NewMysql() common2.Db {
+func NewMysql() common.Db {
 	return &mysql{}
 }

@@ -18,7 +18,6 @@ type Role struct {
 
 func initConfig() *xorm.EngineGroup {
 	db := NewMysql().Connect().Conn
-	db.ShowSQL(true)
 	return db
 }
 

@@ -16,8 +16,7 @@ import (
 )
 
 func TestCovertConfiguration(t *testing.T) {
-	c := CovertConfiguration()
-	t.Log(c.GetUrl())
-	t.Log(c.GetSwaggerUrl())
-	t.Log(c.GetActive())
+	t.Log(Config.GetUrl())
+	t.Log(Config.GetSwaggerUrl())
+	t.Log(Config.GetActive())
 }

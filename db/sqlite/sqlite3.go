@@ -2,7 +2,9 @@ package sqlite
 
 import (
 	"fmt"
-	common2 "gitee.com/itsos/golibs/db/common"
+	"gitee.com/itsos/golibs/config/web"
+	"gitee.com/itsos/golibs/db/common"
+	"gitee.com/itsos/golibs/global/consts"
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -10,21 +12,24 @@ import (
 type sqlite struct{}
 
 func (s *sqlite) GetDsn() string {
-	return fmt.Sprintf("%s?loc=%s", common2.Config.GetStorageFile(), common2.Config.GetTimezone())
+	return fmt.Sprintf("%s?loc=%s", common.Config.GetStorageFile(), common.Config.GetTimezone())
 }
 
 const driver = "sqlite3"
 
-func (s *sqlite) Connect() *common2.Dbs {
-	common2.Config.UseSqlite()
-	common2.Config.SetMode(common2.Master)
+func (s *sqlite) Connect() *common.Dbs {
+	common.Config.UseSqlite()
+	common.Config.SetMode(common.Master)
 	engine, err := xorm.NewEngineGroup(driver, []string{s.GetDsn()})
+	if web.Config.GetActive() == consts.EnvDev {
+		engine.ShowSQL(true)
+	}
 	if err != nil {
 		panic(err)
 	}
-	return &common2.Dbs{Conn: engine}
+	return &common.Dbs{Conn: engine}
 }
 
-func NewSqlite() common2.Db {
+func NewSqlite() common.Db {
 	return &sqlite{}
 }

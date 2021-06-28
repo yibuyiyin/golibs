@@ -87,3 +87,5 @@ func CovertConfiguration() *Configuration {
 	}
 	return c
 }
+
+var Config = CovertConfiguration()
