@@ -21,33 +21,41 @@ func TestNewEs(t *testing.T) {
 	var buf bytes.Buffer
 	query := map[string]interface{}{
 		"query": map[string]interface{}{
-			"match": map[string]interface{}{
-				"title": "中国",
+			"match_all": map[string]interface{}{
+				"title": "a",
+				"intro": "a",
 			},
 		},
-		"highlight": map[string]interface{}{
-			"pre_tags":  []string{"<font color='red'>"},
-			"post_tags": []string{"</font>"},
-			"fields": map[string]interface{}{
-				"title": map[string]interface{}{},
-			},
-		},
+		//"highlight": map[string]interface{}{
+		//	"pre_tags":  []string{"<font color='red'>"},
+		//	"post_tags": []string{"</font>"},
+		//	"fields": map[string]interface{}{
+		//		"title": map[string]interface{}{},
+		//		"data": map[string]interface{}{},
+		//	},
+		//},
 	}
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
 		panic("Error encoding query:" + err.Error())
 	}
 	// Perform the search request.
 	es := NewEs()
-	res, err := es.Search(
-		es.Search.WithContext(context.Background()),
-		es.Search.WithIndex("canal"),
-		es.Search.WithDocumentType("stuty_notes"),
-		es.Search.WithFrom(0),
-		es.Search.WithSize(10),
-		es.Search.WithIndex("canal"),
-		es.Search.WithBody(&buf),
-		es.Search.WithTrackTotalHits(true),
-		es.Search.WithPretty(),
+	res, err := es.Msearch(
+		&buf,
+		es.Msearch.WithContext(context.Background()),
+		es.Msearch.WithIndex("canal"),
+		es.Msearch.WithDocumentType("study_notes"),
+		es.Msearch.WithPretty(),
+		//es.Search.WithIndex("canal"),
+		//es.Search.WithDocumentType("study_notes"),
+		//es.Search.WithFrom(0),
+		//es.Search.WithSize(10),
+		////es.Search.WithDocvalueFields("title", "intro"),
+		////es.Search.WithQuery("title:a"),
+		////es.Search.WithSuggestText()
+		//es.Search.WithBody(&buf),
+		//es.Search.WithTrackTotalHits(true),
+		//es.Search.WithPretty(),
 	)
 
 	if err != nil {
