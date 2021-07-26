@@ -3,6 +3,7 @@ module gitee.com/itsos/golibs
 go 1.15
 
 require (
+	github.com/elastic/go-elasticsearch/v7 v7.13.1
 	github.com/go-redis/redis/v8 v8.8.3
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-xorm/xorm v0.7.9

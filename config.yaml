@@ -40,3 +40,6 @@ redis:
     password:
     db: 0
 
+es:
+  http://localhost:9200
+  http://localhost:9200

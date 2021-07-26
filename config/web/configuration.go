@@ -25,6 +25,7 @@ type ConfigurationReadOnly interface {
 	GetPort() string
 	GetSwaggerPort() string
 	GetScheme() string
+	GetEs() []string
 }
 
 type Configuration struct {
@@ -33,6 +34,7 @@ type Configuration struct {
 	Port        string `yaml:"port"`
 	Scheme      string `yaml:"scheme"`
 	SwaggerPort string `yaml:"swagger.port"`
+	Es          string `yaml:"es"`
 }
 
 func (c Configuration) GetUrl() string {
@@ -49,6 +51,10 @@ func (c Configuration) GetSwaggerUrl() string {
 		url += ":" + c.GetSwaggerPort()
 	}
 	return url
+}
+
+func (c Configuration) GetEs() []string {
+	return viper.GetStringSlice(c.Es)
 }
 
 func (c Configuration) GetActive() string {
@@ -81,7 +87,7 @@ func CovertConfiguration() *Configuration {
 		tag := f.Tag.Get("yaml")
 		s := t.FieldByName(f.Name)
 		if !s.CanSet() {
-			panic("not set value.")
+			panic(f.Name + " => not set value. " + tag)
 		}
 		s.SetString(tag)
 	}
