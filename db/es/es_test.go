@@ -13,6 +13,7 @@ package es
 import (
 	"bytes"
 	"encoding/json"
+	_ "gitee.com/itsos/golibs/tests"
 	"golang.org/x/net/context"
 	"testing"
 )
@@ -20,20 +21,15 @@ import (
 func TestNewEs(t *testing.T) {
 	var buf bytes.Buffer
 	query := map[string]interface{}{
-		"query": map[string]interface{}{
-			"match_all": map[string]interface{}{
-				"title": "a",
-				"intro": "a",
+		"highlight": map[string]interface{}{
+			"pre_tags":  []string{"<font-size='red'>"},
+			"post_tags": []string{"</font>"},
+			"fields": map[string]interface{}{
+				"title": map[string]interface{}{},
+				"intro": map[string]interface{}{},
+				"data":  map[string]interface{}{},
 			},
 		},
-		//"highlight": map[string]interface{}{
-		//	"pre_tags":  []string{"<font color='red'>"},
-		//	"post_tags": []string{"</font>"},
-		//	"fields": map[string]interface{}{
-		//		"title": map[string]interface{}{},
-		//		"data": map[string]interface{}{},
-		//	},
-		//},
 	}
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
 		panic("Error encoding query:" + err.Error())
@@ -43,14 +39,21 @@ func TestNewEs(t *testing.T) {
 	res, err := es.Search(
 		es.Search.WithContext(context.Background()),
 		es.Search.WithIndex("canal"),
-		es.Search.WithDocumentType("study_notes"),
+		//es.Search.WithDocumentType("study_notes"),
 		es.Search.WithFrom(0),
 		es.Search.WithSize(10),
-		es.Search.WithDocvalueFields("<bbbb>", "</cccc>"),
-		es.Search.WithQuery("title:a"),
+		//es.Search.WithSeqNoPrimaryTerm(true),
+		es.Search.WithSourceExcludes("is_del"),
+		es.Search.WithAnalyzer("ik_smart"),
+		//es.Search.WithDocvalueFields(""),
+		// https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
+		es.Search.WithQuery("linux curl AND is_del:0 AND is_state:2"),
+		es.Search.WithDefaultOperator("and"),
+		//es.Search.WithExplain(true),
 		//es.Search.WithSuggestText()
 		es.Search.WithBody(&buf),
 		es.Search.WithTrackTotalHits(true),
+		es.Search.WithErrorTrace(),
 		es.Search.WithPretty(),
 	)
 
