@@ -3,7 +3,7 @@ active: dev
 domain: demo.com
 scheme: http
 port: 8080
-unix: /tmp/go.sock
+sock: /tmp/go.sock
 
 swagger:
   port: 9090
@@ -42,5 +42,4 @@ redis:
     db: 0
 
 es:
-  http://localhost:9200
-  http://localhost:9200
+  - http://localhost:9200
