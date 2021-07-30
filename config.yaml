@@ -3,6 +3,7 @@ active: dev
 domain: demo.com
 scheme: http
 port: 8080
+unix: /tmp/go.sock
 
 swagger:
   port: 9090

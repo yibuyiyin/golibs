@@ -26,6 +26,7 @@ type ConfigurationReadOnly interface {
 	GetSwaggerPort() string
 	GetScheme() string
 	GetEs() []string
+	GetUnix() string
 }
 
 type Configuration struct {
@@ -35,6 +36,7 @@ type Configuration struct {
 	Scheme      string `yaml:"scheme"`
 	SwaggerPort string `yaml:"swagger.port"`
 	Es          string `yaml:"es"`
+	Unix        string `yaml:"unix"`
 }
 
 func (c Configuration) GetUrl() string {
@@ -55,6 +57,10 @@ func (c Configuration) GetSwaggerUrl() string {
 
 func (c Configuration) GetEs() []string {
 	return viper.GetStringSlice(c.Es)
+}
+
+func (c Configuration) GetUnix() string {
+	return viper.GetString(c.Unix)
 }
 
 func (c Configuration) GetActive() string {
