@@ -7,6 +7,7 @@ import (
 	"gitee.com/itsos/golibs/global/consts"
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3"
+	"sync"
 )
 
 type sqlite struct{}
@@ -30,6 +31,16 @@ func (s *sqlite) Connect() *common.Dbs {
 	return &common.Dbs{Conn: engine}
 }
 
-func NewSqlite() common.Db {
+func NewSqliteOld() common.Db {
 	return &sqlite{}
+}
+
+var sqliteOnce sync.Once
+var sqliteNew *xorm.EngineGroup
+
+func NewSqlite() *xorm.EngineGroup {
+	sqliteOnce.Do(func() {
+		sqliteNew = NewSqliteOld().Connect().Conn
+	})
+	return sqliteNew
 }

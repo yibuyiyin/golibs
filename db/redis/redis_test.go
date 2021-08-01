@@ -7,7 +7,7 @@ import (
 )
 
 func initConfig() *redis.Client {
-	db := NewRedis().Connect().Rdb
+	db := NewRedisOld().Connect().Rdb
 	return db
 }
 

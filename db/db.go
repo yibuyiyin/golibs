@@ -17,10 +17,10 @@ var once sync.Once
 func Init() {
 	once.Do(func() {
 		if common.Config.Init().GetStorageDriver() == common.DriverMysql {
-			Conn = mysql.NewMysql().Connect().Conn
+			Conn = mysql.NewMysqlOld().Connect().Conn
 		} else {
-			Conn = sqlite.NewSqlite().Connect().Conn
+			Conn = sqlite.NewSqliteOld().Connect().Conn
 		}
-		Rdb = redis.NewRedis().Connect().Rdb
+		Rdb = redis.NewRedisOld().Connect().Rdb
 	})
 }

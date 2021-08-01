@@ -17,7 +17,7 @@ type Role struct {
 }
 
 func initConfig() *xorm.EngineGroup {
-	db := NewSqlite().Connect().Conn
+	db := NewSqliteOld().Connect().Conn
 	return db
 }
 

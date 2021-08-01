@@ -7,6 +7,7 @@ import (
 	"gitee.com/itsos/golibs/global/consts"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
+	"sync"
 	"time"
 )
 
@@ -51,6 +52,16 @@ func (m *mysql) Connect() *common.Dbs {
 	return &common.Dbs{Conn: engine}
 }
 
-func NewMysql() common.Db {
+func NewMysqlOld() common.Db {
 	return &mysql{}
+}
+
+var mysqlOnce sync.Once
+var mysqlNew *xorm.EngineGroup
+
+func NewMysql() *xorm.EngineGroup {
+	mysqlOnce.Do(func() {
+		mysqlNew = NewMysqlOld().Connect().Conn
+	})
+	return mysqlNew
 }

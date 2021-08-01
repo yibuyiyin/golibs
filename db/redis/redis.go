@@ -6,6 +6,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/net/context"
+	"sync"
 )
 
 // https://github.com/go-redis/redis
@@ -34,6 +35,16 @@ func (r *rds) Connect() *common.Dbs {
 	return &common.Dbs{Rdb: rdb}
 }
 
-func NewRedis() common.Db {
+func NewRedisOld() common.Db {
 	return &rds{}
+}
+
+var redisOnce sync.Once
+var redisNew *redis.Client
+
+func NewReids() *redis.Client {
+	redisOnce.Do(func() {
+		redisNew = NewRedisOld().Connect().Rdb
+	})
+	return redisNew
 }
