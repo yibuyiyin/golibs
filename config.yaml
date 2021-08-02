@@ -1,16 +1,21 @@
 # 环境 dev / test / product
 active: dev
-domain: demo.com
+
+# 域名端口服务，可单独提供服务
+domain: localhost
 scheme: http
 port: 8080
+
+# socket 方式，结合nginx转发
 sock: /tmp/go.sock
+
+# 时区
 timezone: Asia/Shanghai
 
 swagger:
   port: 9090
 
-# 存储方案二选一， mysql or sqlite3
-storage-driver: mysql
+# mysql
 mysql:
   master:
     user: root
@@ -27,15 +32,18 @@ mysql:
     database: demo
     charset: utf8mb4
 
+# sqlite
 sqlite:
   storageFile: /tmp/sqlite3.db
   timezone: Asia/Shanghai
 
+# redis
 redis:
   host: 127.0.0.1
   port: 6379
   password:
   db: 0
 
+# elasticsearch
 es:
   - http://localhost:9200
