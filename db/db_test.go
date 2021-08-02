@@ -1,7 +1,6 @@
 package db
 
 import (
-	_ "gitee.com/itsos/golibs/tests"
 	"golang.org/x/net/context"
 	"testing"
 )

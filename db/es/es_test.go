@@ -13,7 +13,6 @@ package es
 import (
 	"bytes"
 	"encoding/json"
-	_ "gitee.com/itsos/golibs/tests"
 	"golang.org/x/net/context"
 	"testing"
 )

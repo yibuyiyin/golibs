@@ -11,6 +11,7 @@ import (
 )
 
 type sqlite struct{}
+type GoLibSqlite = *xorm.EngineGroup
 
 func (s *sqlite) GetDsn() string {
 	return fmt.Sprintf("%s?loc=%s", common.Config.GetStorageFile(), common.Config.GetTimezone())
@@ -36,9 +37,9 @@ func NewSqliteOld() common.Db {
 }
 
 var sqliteOnce sync.Once
-var sqliteNew *xorm.EngineGroup
+var sqliteNew GoLibSqlite
 
-func NewSqlite() *xorm.EngineGroup {
+func NewSqlite() GoLibSqlite {
 	sqliteOnce.Do(func() {
 		sqliteNew = NewSqliteOld().Connect().Conn
 	})

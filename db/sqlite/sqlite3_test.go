@@ -1,8 +1,6 @@
 package sqlite
 
 import (
-	_ "gitee.com/itsos/golibs/tests"
-	"github.com/go-xorm/xorm"
 	"log"
 	"testing"
 	"time"
@@ -16,7 +14,7 @@ type Role struct {
 	CreateTime time.Time `xorm:"not null created"` //创建时间
 }
 
-func initConfig() *xorm.EngineGroup {
+func initConfig() GoLibSqlite {
 	db := NewSqliteOld().Connect().Conn
 	return db
 }

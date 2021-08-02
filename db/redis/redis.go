@@ -12,6 +12,7 @@ import (
 // https://github.com/go-redis/redis
 
 type rds struct{}
+type GoLibRedis = *redis.Client
 
 func (r *rds) GetDsn() string {
 	return fmt.Sprintf("%s:%d", common.Config.GetHost(), common.Config.GetPort())
@@ -40,9 +41,9 @@ func NewRedisOld() common.Db {
 }
 
 var redisOnce sync.Once
-var redisNew *redis.Client
+var redisNew GoLibRedis
 
-func NewReids() *redis.Client {
+func NewRedis() GoLibRedis {
 	redisOnce.Do(func() {
 		redisNew = NewRedisOld().Connect().Rdb
 	})

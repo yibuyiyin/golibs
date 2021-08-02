@@ -15,6 +15,7 @@ import (
 // https://gobook.io/read/gitea.com/xorm/manual-zh-CN/chapter-01/2.engine_group.html#
 
 type mysql struct{}
+type GoLibMysql = *xorm.EngineGroup
 
 func (m *mysql) GetDsn() string {
 	return fmt.Sprintf(
@@ -57,9 +58,9 @@ func NewMysqlOld() common.Db {
 }
 
 var mysqlOnce sync.Once
-var mysqlNew *xorm.EngineGroup
+var mysqlNew GoLibMysql
 
-func NewMysql() *xorm.EngineGroup {
+func NewMysql() GoLibMysql {
 	mysqlOnce.Do(func() {
 		mysqlNew = NewMysqlOld().Connect().Conn
 	})

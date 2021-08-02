@@ -10,10 +10,13 @@ import (
 	"sync"
 )
 
+type GoLibDb = *xorm.EngineGroup
+
 var Conn *xorm.EngineGroup
 var Rdb *redis2.Client
 var once sync.Once
 
+// Init 兼容老的方法，已过时
 func Init() {
 	once.Do(func() {
 		if common.Config.Init().GetStorageDriver() == common.DriverMysql {

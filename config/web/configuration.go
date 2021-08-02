@@ -11,6 +11,7 @@
 package web
 
 import (
+	"gitee.com/itsos/golibs/config"
 	"github.com/spf13/viper"
 	"reflect"
 )
@@ -86,6 +87,7 @@ func (c Configuration) GetScheme() string {
 var _ ConfigurationReadOnly = (*Configuration)(nil)
 
 func CovertConfiguration() *Configuration {
+	config.Init()
 	c := &Configuration{}
 	t := reflect.ValueOf(c).Elem()
 	for i := 0; i < t.NumField(); i++ {

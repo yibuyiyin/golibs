@@ -1,6 +1,9 @@
 package common
 
-import "github.com/spf13/viper"
+import (
+	"gitee.com/itsos/golibs/config"
+	"github.com/spf13/viper"
+)
 
 type Configuration interface {
 	GetHost() string
@@ -166,6 +169,7 @@ func (c *configuration) GetStorageFile() string {
 }
 
 func newConfiguration() Configuration {
+	config.Init()
 	return &configuration{}
 }
 
