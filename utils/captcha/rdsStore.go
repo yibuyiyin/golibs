@@ -1,8 +1,7 @@
 package captcha
 
 import (
-	"gitee.com/itsos/golibs/v2/db"
-	_ "gitee.com/itsos/golibs/v2/tests/testsdb"
+	"gitee.com/itsos/golibs/v2/db/redis"
 	"github.com/mojocn/base64Captcha"
 	"golang.org/x/net/context"
 	"time"
@@ -15,18 +14,18 @@ type rdsStore struct {
 var ctx = context.Background()
 
 func (r rdsStore) Set(id string, value string) {
-	if err := db.Rdb.Set(ctx, id, value, r.expiration).Err(); err != nil {
+	if err := redis.NewRedis().Set(ctx, id, value, r.expiration).Err(); err != nil {
 		panic(err)
 	}
 }
 
 func (r rdsStore) Get(id string, clear bool) string {
-	code, err := db.Rdb.Get(ctx, id).Result()
+	code, err := redis.NewRedis().Get(ctx, id).Result()
 	if err != nil {
 		return ""
 	}
 	if clear {
-		db.Rdb.Del(ctx, id)
+		redis.NewRedis().Del(ctx, id)
 	}
 	return code
 }
