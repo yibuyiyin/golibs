@@ -15,8 +15,7 @@ type Role struct {
 }
 
 func initConfig() GoLibSqlite {
-	db := NewSqliteOld().Connect().Conn
-	return db
+	return NewSqlite()
 }
 
 func TestConnect(t *testing.T) {

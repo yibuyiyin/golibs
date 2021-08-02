@@ -1,7 +1,7 @@
 package core
 
 import (
-	"gitee.com/itsos/golibs/global/consts"
+	"gitee.com/itsos/golibs/v2/global/consts"
 	"os"
 )
 

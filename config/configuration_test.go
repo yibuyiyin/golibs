@@ -8,7 +8,7 @@
    See the Mulan PSL v2 for more details.
 */
 
-package web
+package config
 
 import (
 	"testing"

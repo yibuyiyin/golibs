@@ -1,4 +1,4 @@
-module gitee.com/itsos/golibs
+module gitee.com/itsos/golibs/v2
 
 go 1.15
 

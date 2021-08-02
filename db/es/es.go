@@ -11,7 +11,7 @@
 package es
 
 import (
-	"gitee.com/itsos/golibs/config/web"
+	"gitee.com/itsos/golibs/v2/config"
 	"github.com/elastic/go-elasticsearch/v7"
 	"sync"
 )
@@ -23,7 +23,7 @@ func NewEs() *elasticsearch.Client {
 	esOnce.Do(func() {
 		var err error
 		cfg := elasticsearch.Config{
-			Addresses: web.Config.GetEs(),
+			Addresses: config.Config.GetEs(),
 		}
 		esNew, err = elasticsearch.NewClient(cfg)
 		if err != nil {

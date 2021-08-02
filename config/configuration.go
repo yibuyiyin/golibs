@@ -8,10 +8,11 @@
    See the Mulan PSL v2 for more details.
 */
 
-package web
+package config
 
 import (
-	"gitee.com/itsos/golibs/config"
+	"fmt"
+	"gitee.com/itsos/golibs/v2/global/variable"
 	"github.com/goinggo/mapstructure"
 	"github.com/spf13/viper"
 	"reflect"
@@ -26,10 +27,11 @@ type ConfigurationReadOnly interface {
 	GetSwaggerUrl() string
 	GetDomain() string
 	GetPort() string
+	GetTimezone() string
+	GetSock() string
 	GetSwaggerPort() string
 	GetScheme() string
 	GetEs() []string
-	GetSock() string
 	GetMysql() map[string]IMysql
 	GetSqlite() ISqlite
 	GetRedis() IRedis
@@ -40,9 +42,10 @@ type Configuration struct {
 	Domain      string `yaml:"domain"`
 	Port        string `yaml:"port"`
 	Scheme      string `yaml:"scheme"`
+	Sock        string `yaml:"sock"`
+	Timezone    string `yaml:"timezone"`
 	SwaggerPort string `yaml:"swagger.port"`
 	Es          string `yaml:"es"`
-	Sock        string `yaml:"sock"`
 	Mysql       string `yaml:"mysql"`
 	Sqlite      string `yaml:"sqlite"`
 	Redis       string `yaml:"redis"`
@@ -70,6 +73,10 @@ func (c Configuration) GetEs() []string {
 
 func (c Configuration) GetSock() string {
 	return viper.GetString(c.Sock)
+}
+
+func (c Configuration) GetTimezone() string {
+	return viper.GetString(c.Timezone)
 }
 
 func (c Configuration) GetActive() string {
@@ -144,7 +151,6 @@ type mysql struct {
 	Password string
 	Database string
 	Charset  string
-	Timezone string
 }
 
 func (m mysql) GetHost() string {
@@ -171,10 +177,6 @@ func (m mysql) GetCharset() string {
 	return m.Charset
 }
 
-func (m mysql) GetTimezone() string {
-	return m.Timezone
-}
-
 type IMysql interface {
 	GetHost() string
 	GetPort() int
@@ -182,7 +184,6 @@ type IMysql interface {
 	GetPassword() string
 	GetDatabase() string
 	GetCharset() string
-	GetTimezone() string
 }
 
 var _ IMysql = (*mysql)(nil)
@@ -245,8 +246,9 @@ var _ IRedis = (*redis)(nil)
 
 var _ ConfigurationReadOnly = (*Configuration)(nil)
 
+// CovertConfiguration struct tag 指定为属性值，方便操作
 func CovertConfiguration() *Configuration {
-	config.Init()
+	loadConfigFile()
 	c := &Configuration{}
 	t := reflect.ValueOf(c).Elem()
 	for i := 0; i < t.NumField(); i++ {
@@ -259,6 +261,17 @@ func CovertConfiguration() *Configuration {
 		s.SetString(tag)
 	}
 	return c
+}
+
+// loadConfigFile 加载配置文件
+func loadConfigFile() {
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(variable.BasePath)
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	}
 }
 
 var Config = CovertConfiguration()

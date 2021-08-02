@@ -4,13 +4,13 @@ domain: demo.com
 scheme: http
 port: 8080
 sock: /tmp/go.sock
+timezone: Asia/Shanghai
 
 swagger:
   port: 9090
 
 # 存储方案二选一， mysql or sqlite3
 storage-driver: mysql
-
 mysql:
   master:
     user: root
@@ -19,7 +19,6 @@ mysql:
     port: 3306
     database: demo
     charset: utf8mb4
-    timezone: Asia/Shanghai
   slave1:
     user: root
     password: password
@@ -27,7 +26,6 @@ mysql:
     port: 3307
     database: demo
     charset: utf8mb4
-    timezone: Asia/Shanghai
 
 sqlite:
   storageFile: /tmp/sqlite3.db

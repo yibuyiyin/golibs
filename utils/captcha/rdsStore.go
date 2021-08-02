@@ -1,8 +1,8 @@
 package captcha
 
 import (
-	"gitee.com/itsos/golibs/db"
-	_ "gitee.com/itsos/golibs/tests/testsdb"
+	"gitee.com/itsos/golibs/v2/db"
+	_ "gitee.com/itsos/golibs/v2/tests/testsdb"
 	"github.com/mojocn/base64Captcha"
 	"golang.org/x/net/context"
 	"time"

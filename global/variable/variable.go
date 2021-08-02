@@ -2,8 +2,8 @@ package variable
 
 import (
 	"flag"
-	"gitee.com/itsos/golibs/core"
-	"gitee.com/itsos/golibs/global/consts"
+	"gitee.com/itsos/golibs/v2/core"
+	"gitee.com/itsos/golibs/v2/global/consts"
 	"os"
 	"strings"
 )

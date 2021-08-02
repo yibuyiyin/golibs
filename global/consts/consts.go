@@ -7,6 +7,12 @@ const (
 	// EnvProduct 生产环境
 	EnvProduct string = "product"
 
+	// EnvPre 灰度环境
+	EnvPre string = "pre"
+
+	// EnvUat 用户验证环境
+	EnvUat string = "uat"
+
 	// EnvTest 测试环境
 	EnvTest string = "test"
 
