@@ -29,17 +29,15 @@ mysql:
     charset: utf8mb4
     timezone: Asia/Shanghai
 
-sqlite3:
-  master:
-    storage-file: /tmp/sqlite3.db
-    timezone: Asia/Shanghai
+sqlite:
+  storageFile: /tmp/sqlite3.db
+  timezone: Asia/Shanghai
 
 redis:
-  master:
-    host: 127.0.0.1
-    port: 6379
-    password:
-    db: 0
+  host: 127.0.0.1
+  port: 6379
+  password:
+  db: 0
 
 es:
   - http://localhost:9200
