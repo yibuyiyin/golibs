@@ -13,6 +13,7 @@ package config
 import (
 	"fmt"
 	"gitee.com/itsos/golibs/v2/global/variable"
+	"gitee.com/itsos/golibs/v2/utils/reflects"
 	"github.com/goinggo/mapstructure"
 	"github.com/spf13/viper"
 	"reflect"
@@ -67,6 +68,7 @@ func (c Configuration) GetSwaggerUrl() string {
 	return url
 }
 
+// GetEs 获取es配置
 func (c Configuration) GetEs() []string {
 	return viper.GetStringSlice(c.Es)
 }
@@ -99,6 +101,7 @@ func (c Configuration) GetScheme() string {
 	return viper.GetString(c.Scheme)
 }
 
+// sqliteAlone sqlite配置实例
 var sqliteAlone ISqlite
 
 func (c Configuration) GetSqlite() ISqlite {
@@ -113,20 +116,7 @@ func (c Configuration) GetSqlite() ISqlite {
 	return sqliteAlone
 }
 
-var redisAlone IRedis
-
-func (c Configuration) GetRedis() IRedis {
-	if redisAlone == nil {
-		v := viper.GetStringMapString(c.Redis)
-		r := redis{}
-		if err := mapstructure.Decode(v, &r); err != nil {
-			panic(err)
-		}
-		redisAlone = r
-	}
-	return redisAlone
-}
-
+// mysqlAlone mysql配置实例
 var mysqlAlone map[string]IMysql
 
 func (c Configuration) GetMysql() map[string]IMysql {
@@ -141,6 +131,21 @@ func (c Configuration) GetMysql() map[string]IMysql {
 		}
 	}
 	return mysqlAlone
+}
+
+// redisAlone redis配置实例
+var redisAlone IRedis
+
+func (c Configuration) GetRedis() IRedis {
+	if redisAlone == nil {
+		v := viper.GetStringMapString(c.Redis)
+		r := redis{}
+		if err := mapstructure.Decode(v, &r); err != nil {
+			panic(err)
+		}
+		redisAlone = r
+	}
+	return redisAlone
 }
 
 // mysql mysql配置
@@ -251,15 +256,7 @@ func CovertConfiguration() *Configuration {
 	loadConfigFile()
 	c := &Configuration{}
 	t := reflect.ValueOf(c).Elem()
-	for i := 0; i < t.NumField(); i++ {
-		f := t.Type().Field(i)
-		tag := f.Tag.Get("yaml")
-		s := t.FieldByName(f.Name)
-		if !s.CanSet() {
-			panic(f.Name + " => not set value. " + tag)
-		}
-		s.SetString(tag)
-	}
+	reflects.TagToValueFlip(t, reflects.YAML)
 	return c
 }
 
@@ -275,3 +272,44 @@ func loadConfigFile() {
 }
 
 var Config = CovertConfiguration()
+
+// minio
+type minio struct {
+	Endpoint        string `yaml:"minio.endpoint"`
+	AccessKeyID     string `yaml:"minio.access_key_id"`
+	SecretAccessKey string `yaml:"minio.secret_access_key"`
+	UseSSL          string `yaml:"minio.use_ssl"`
+}
+
+func (m minio) GetEndpoint() string {
+	return viper.GetString(m.Endpoint)
+}
+
+func (m minio) GetAccessKeyID() string {
+	return viper.GetString(m.AccessKeyID)
+}
+
+func (m minio) GetSecretAccessKey() string {
+	return viper.GetString(m.SecretAccessKey)
+}
+
+func (m minio) GetUseSSL() bool {
+	return viper.GetBool(m.UseSSL)
+}
+
+type IMinio interface {
+	GetEndpoint() string
+	GetAccessKeyID() string
+	GetSecretAccessKey() string
+	GetUseSSL() bool
+}
+
+var minioIns IMinio = nil
+
+func GetMinio() IMinio {
+	if minioIns == nil {
+		minioIns = &minio{}
+		reflects.TagToValueFlip(reflect.ValueOf(minioIns).Elem(), reflects.YAML)
+	}
+	return minioIns
+}

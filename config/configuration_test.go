@@ -38,6 +38,13 @@ func TestGetRedis(t *testing.T) {
 	t.Log(Config.GetRedis().GetDb())
 }
 
+func TestGetMinio(t *testing.T) {
+	t.Log(GetMinio().GetEndpoint())
+	t.Log(GetMinio().GetAccessKeyID())
+	t.Log(GetMinio().GetSecretAccessKey())
+	t.Log(GetMinio().GetUseSSL())
+}
+
 func BenchmarkConfiguration_GetMysql(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
