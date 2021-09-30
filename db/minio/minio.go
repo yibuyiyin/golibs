@@ -14,7 +14,6 @@ import (
 	"gitee.com/itsos/golibs/v2/config"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"log"
 	"sync"
 )
 
@@ -35,7 +34,7 @@ func NewMinio() *minio.Client {
 			Secure: useSSL,
 		})
 		if err != nil {
-			log.Fatalln(err)
+			panic(err)
 		}
 	})
 	return minioNew
