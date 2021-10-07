@@ -5,7 +5,7 @@ const (
 	DevBasePathKey string = "DEVBASEPATH"
 
 	// EnvProduct 生产环境
-	EnvProduct string = "product"
+	EnvProduct string = "prod"
 
 	// EnvPre 灰度环境
 	EnvPre string = "pre"
