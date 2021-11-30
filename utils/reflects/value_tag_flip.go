@@ -21,6 +21,9 @@ const (
 func TagToValueFlip(t reflect.Value, tagType string) {
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Type().Field(i)
+		if f.Type.Name() != "string" {
+			continue
+		}
 		tag := f.Tag.Get(tagType)
 		s := t.FieldByName(f.Name)
 		if !s.CanSet() {
