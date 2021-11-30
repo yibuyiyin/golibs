@@ -264,7 +264,7 @@ func CovertConfiguration() *Configuration {
 func loadConfigFile() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(variable.BasePath)
+	viper.AddConfigPath(variable.ConfPath)
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
