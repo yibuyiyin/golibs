@@ -5,5 +5,5 @@ import (
 )
 
 func TestNewClusterRedis(t *testing.T) {
-	NewClusterRedis()
+	NewRedisCluster()
 }
