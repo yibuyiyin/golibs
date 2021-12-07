@@ -16,7 +16,7 @@ type GoLibRedisCluster = *redis.ClusterClient
 var redisClusterOnce sync.Once
 var redisClusterNew GoLibRedisCluster
 
-func NewClusterRedis() GoLibRedisCluster {
+func NewRedisCluster() GoLibRedisCluster {
 	redisClusterOnce.Do(func() {
 		redisClusterNew = redis.NewClusterClient(&redis.ClusterOptions{
 			DialTimeout:  10 * time.Second,
