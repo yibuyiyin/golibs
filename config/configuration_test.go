@@ -27,8 +27,8 @@ func TestGetMysql(t *testing.T) {
 }
 
 func TestGetSqlite(t *testing.T) {
-	t.Log(Config.GetSqlite())
-	t.Log(Config.GetSqlite().GetStorageFile())
+	t.Log(GetSqlite().GetTimezone())
+	t.Log(GetSqlite().GetStorageFile())
 }
 
 func TestGetRedis(t *testing.T) {
@@ -43,6 +43,12 @@ func TestGetMinio(t *testing.T) {
 	t.Log(GetMinio().GetAccessKeyID())
 	t.Log(GetMinio().GetSecretAccessKey())
 	t.Log(GetMinio().GetUseSSL())
+}
+
+func TestGetRedisCluster(t *testing.T) {
+	t.Log(GetRedisCluster().GetHosts())
+	t.Log(GetRedisCluster().GetUsername())
+	t.Log(GetRedisCluster().GetPassword())
 }
 
 func BenchmarkConfiguration_GetMysql(b *testing.B) {

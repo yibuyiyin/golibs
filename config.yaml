@@ -34,15 +34,28 @@ mysql:
 
 # sqlite
 sqlite:
-  storageFile: /tmp/sqlite3.db
+  storage_file: /tmp/sqlite3.db
   timezone: Asia/Shanghai
 
 # redis
 redis:
   host: 127.0.0.1
   port: 6379
+  username:
   password:
   db: 0
+
+# redis cluster
+redis_cluster:
+  username:
+  password:
+  hosts:
+    - "127.0.0.1:7001"
+    - "127.0.0.1:7002"
+    - "127.0.0.1:7003"
+    - "127.0.0.1:7004"
+    - "127.0.0.1:7005"
+    - "127.0.0.1:7006"
 
 # elasticsearch
 es:

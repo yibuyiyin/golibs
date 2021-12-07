@@ -6,9 +6,11 @@ import (
 	"github.com/go-redis/redis/v8"
 	"golang.org/x/net/context"
 	"sync"
+	"time"
 )
 
 // https://github.com/go-redis/redis
+// 单机模式
 
 type GoLibRedis = *redis.Client
 
@@ -17,11 +19,22 @@ var redisNew GoLibRedis
 
 func NewRedis() GoLibRedis {
 	redisOnce.Do(func() {
-		dsn := fmt.Sprintf("%s:%d", config.Config.GetRedis().GetHost(), config.Config.GetRedis().GetPort())
+		ipAndPort := fmt.Sprintf("%s:%d", config.Config.GetRedis().GetHost(), config.Config.GetRedis().GetPort())
 		redisNew = redis.NewClient(&redis.Options{
-			Addr:     dsn,
-			Password: config.Config.GetRedis().GetPassword(),
-			DB:       config.Config.GetRedis().GetDb(),
+			Addr:         ipAndPort,
+			Username:     config.Config.GetRedis().GetUsername(),
+			Password:     config.Config.GetRedis().GetPassword(),
+			DB:           config.Config.GetRedis().GetDb(),
+			DialTimeout:  10 * time.Second,
+			ReadTimeout:  30 * time.Second,
+			WriteTimeout: 30 * time.Second,
+
+			MaxRetries: -1,
+
+			PoolSize:           10,
+			PoolTimeout:        30 * time.Second,
+			IdleTimeout:        time.Minute,
+			IdleCheckFrequency: 100 * time.Millisecond,
 		})
 		err := redisNew.Ping(context.Background()).Err()
 		if err != nil {

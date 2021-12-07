@@ -17,7 +17,7 @@ var sqliteNew GoLibSqlite
 func NewSqlite() GoLibSqlite {
 	sqliteOnce.Do(func() {
 		var err error
-		dsn := fmt.Sprintf("%s?loc=%s", config.Config.GetSqlite().GetStorageFile(), config.Config.GetSqlite().GetTimezone())
+		dsn := fmt.Sprintf("%s?loc=%s", config.GetSqlite().GetStorageFile(), config.GetSqlite().GetTimezone())
 		sqliteNew, err = xorm.NewEngineGroup("sqlite3", []string{dsn})
 		if config.Config.GetActive() == consts.EnvDev {
 			sqliteNew.ShowSQL(true)

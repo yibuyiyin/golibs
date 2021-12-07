@@ -34,7 +34,6 @@ type ConfigurationReadOnly interface {
 	GetScheme() string
 	GetEs() []string
 	GetMysql() map[string]IMysql
-	GetSqlite() ISqlite
 	GetRedis() IRedis
 }
 
@@ -48,7 +47,6 @@ type Configuration struct {
 	SwaggerPort string `yaml:"swagger.port"`
 	Es          string `yaml:"es"`
 	Mysql       string `yaml:"mysql"`
-	Sqlite      string `yaml:"sqlite"`
 	Redis       string `yaml:"redis"`
 }
 
@@ -73,6 +71,7 @@ func (c Configuration) GetEs() []string {
 	return viper.GetStringSlice(c.Es)
 }
 
+// GetSock 获取socket文件地址
 func (c Configuration) GetSock() string {
 	return viper.GetString(c.Sock)
 }
@@ -99,21 +98,6 @@ func (c Configuration) GetSwaggerPort() string {
 
 func (c Configuration) GetScheme() string {
 	return viper.GetString(c.Scheme)
-}
-
-// sqliteAlone sqlite配置实例
-var sqliteAlone ISqlite
-
-func (c Configuration) GetSqlite() ISqlite {
-	if sqliteAlone == nil {
-		v := viper.GetStringMapString(c.Sqlite)
-		s := sqlite{}
-		if err := mapstructure.Decode(v, &s); err != nil {
-			panic(err)
-		}
-		sqliteAlone = s
-	}
-	return sqliteAlone
 }
 
 // mysqlAlone mysql配置实例
@@ -195,16 +179,16 @@ var _ IMysql = (*mysql)(nil)
 
 // sqlite sqlite配置
 type sqlite struct {
-	Timezone    string
-	StorageFile string
+	Timezone    string `yaml:"sqlite.timezone"`
+	StorageFile string `yaml:"sqlite.storage_file"`
 }
 
 func (s sqlite) GetTimezone() string {
-	return s.Timezone
+	return viper.GetString(s.Timezone)
 }
 
 func (s sqlite) GetStorageFile() string {
-	return s.StorageFile
+	return viper.GetString(s.StorageFile)
 }
 
 type ISqlite interface {
@@ -214,10 +198,22 @@ type ISqlite interface {
 
 var _ ISqlite = (*sqlite)(nil)
 
-// redis redis配置
+// sqliteIns sqlite实例
+var sqliteIns ISqlite = nil
+
+func GetSqlite() ISqlite {
+	if sqliteIns == nil {
+		sqliteIns = &sqlite{}
+		reflects.TagToValueFlip(reflect.ValueOf(sqliteIns).Elem(), reflects.YAML)
+	}
+	return sqliteIns
+}
+
+// redis 单机redis配置
 type redis struct {
 	Host     string
 	Port     string
+	Username string
 	Password string
 	Db       string
 }
@@ -229,6 +225,10 @@ func (r redis) GetHost() string {
 func (r redis) GetPort() int {
 	port, _ := strconv.Atoi(r.Port)
 	return port
+}
+
+func (r redis) GetUsername() string {
+	return r.Username
 }
 
 func (r redis) GetPassword() string {
@@ -243,6 +243,7 @@ func (r redis) GetDb() int {
 type IRedis interface {
 	GetHost() string
 	GetPort() int
+	GetUsername() string
 	GetPassword() string
 	GetDb() int
 }
@@ -312,4 +313,39 @@ func GetMinio() IMinio {
 		reflects.TagToValueFlip(reflect.ValueOf(minioIns).Elem(), reflects.YAML)
 	}
 	return minioIns
+}
+
+// redisCluster
+type redisCluster struct {
+	Hosts    string `yaml:"redis_cluster.hosts"`
+	Username string `yaml:"redis_cluster.username"`
+	Password string `yaml:"redis_cluster.password"`
+}
+
+func (r redisCluster) GetHosts() []string {
+	return viper.GetStringSlice(r.Hosts)
+}
+
+func (r redisCluster) GetUsername() string {
+	return viper.GetString(r.Username)
+}
+
+func (r redisCluster) GetPassword() string {
+	return viper.GetString(r.Password)
+}
+
+type IRedisCluster interface {
+	GetHosts() []string
+	GetUsername() string
+	GetPassword() string
+}
+
+var redisClusterIns IRedisCluster = nil
+
+func GetRedisCluster() IRedisCluster {
+	if redisClusterIns == nil {
+		redisClusterIns = &redisCluster{}
+		reflects.TagToValueFlip(reflect.ValueOf(redisClusterIns).Elem(), reflects.YAML)
+	}
+	return redisClusterIns
 }
