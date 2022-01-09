@@ -46,7 +46,7 @@ func TestNewEs(t *testing.T) {
 		es.Search.WithAnalyzer("ik_smart"),
 		//es.Search.WithDocvalueFields(""),
 		// https://lucene.apache.org/core/2_9_4/queryparsersyntax.html
-		es.Search.WithQuery("linux curl AND is_del:0 AND is_state:2"),
+		es.Search.WithQuery("第一天 AND is_del:1 AND is_state:2"),
 		es.Search.WithDefaultOperator("and"),
 		//es.Search.WithExplain(true),
 		//es.Search.WithSuggestText()
