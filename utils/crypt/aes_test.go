@@ -1,35 +1,24 @@
 package crypt
 
 import (
-	"crypto/aes"
-	"encoding/base64"
-	"encoding/hex"
 	"fmt"
 	"testing"
 )
 
 func TestAesEncodeDecode(t *testing.T) {
-	key, _ := hex.DecodeString("6368616e676520746869732070617373")
-	plaintext := []byte("hello 您的")
-
-	c := make([]byte, aes.BlockSize+len(plaintext))
-	iv := c[:aes.BlockSize]
-
-	//加密
-	ciphertext, err := AesEncrypt(plaintext, key, iv)
+	// key的长度必须是16、24或者32字节，分别用于选择AES-128, AES-192, or AES-256
+	var aeskey = []byte("12345678abcdefgh")
+	pass := []byte("vdncloud123456")
+	pass64, err := AesEncrypt(pass, aeskey)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
-
-	//打印加密base64后密码
-	fmt.Println(base64.StdEncoding.EncodeToString(ciphertext))
-
-	//解密
-	plaintext, err = AesDecrypt(ciphertext, key, iv)
+	fmt.Printf("加密后:%v\n", pass64)
+	tpass, err := AesDecrypt(pass64, aeskey)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
-
-	//打印解密明文
-	fmt.Println(string(plaintext))
+	fmt.Printf("解密后:%s\n", tpass)
 }
