@@ -2,6 +2,7 @@ package http
 
 import (
 	"bytes"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -10,14 +11,20 @@ import (
 // Get 发起get请求
 func Get(url string) []byte {
 	resp, err := http.Get(url)
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Panicf("An error occurred while closing the body: %v", err)
+		}
+	}(resp.Body)
+
 	if err != nil {
-		panic("http get fail." + err.Error())
+		log.Panicf("An error occurred while requesting: %v", err)
 	}
 
-	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		panic("read body fail." + err.Error())
+		log.Panicf("An error occurred while reading data: %v", err)
 	}
 	return body
 }
@@ -27,13 +34,20 @@ func Get(url string) []byte {
 func PostJson(url string, params []byte) []byte {
 	responseBody := bytes.NewBuffer(params)
 	resp, err := http.Post(url, "application/json", responseBody)
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Panicf("An error occurred while closing the body: %v", err)
+		}
+	}(resp.Body)
+
 	if err != nil {
-		log.Fatalf("An Error Occured %v", err)
+		log.Panicf("An error occurred while requesting: %v", err)
 	}
-	defer resp.Body.Close()
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
+		log.Panicf("An error occurred while reading data: %v", err)
 	}
 	return body
 }
