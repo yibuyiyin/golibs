@@ -10,3 +10,9 @@ func Sha1(s string) string {
 	o.Write([]byte(s))
 	return hex.EncodeToString(o.Sum(nil))
 }
+
+func Sha1Byte(data []byte) []byte {
+	h := sha1.New()
+	h.Write(data)
+	return h.Sum(nil)
+}
