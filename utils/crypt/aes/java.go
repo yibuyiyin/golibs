@@ -14,7 +14,7 @@ func aesSha1prng(keyBytes []byte, encryptLength int) ([]byte, error) {
 	maxLen := len(hashs)
 	realLen := encryptLength / 8
 	if realLen > maxLen {
-		return nil, errors.New("invalid length!")
+		return nil, errors.New("invalid length")
 	}
 	return hashs[0:realLen], nil
 }
@@ -30,43 +30,13 @@ func generateKey(key []byte) (genKey []byte) {
 	return genKey
 }
 
-// JavaDecryptECB 适用于 Java SHA1PRNG 的解密
-func JavaDecryptECB(encrypted []byte, key []byte) (decrypted []byte, err error) {
-	key, err = aesSha1prng(key, 128) // 比示例一多出这一步
-	if err != nil {
-		return
-	}
-	key = generateKey(key)
-	// 分组秘钥
-	ciphers, err := aes.NewCipher(key)
-	if err != nil {
-		return
-	}
-	// 解码
-	encrypted, err = decode(encrypted)
-	if err != nil {
-		return
-	}
-	decrypted = make([]byte, len(encrypted))
-	for bs, be := 0, ciphers.BlockSize(); bs < len(encrypted); bs, be = bs+ciphers.BlockSize(), be+ciphers.BlockSize() {
-		ciphers.Decrypt(decrypted[bs:be], encrypted[bs:be])
-	}
-	trim := 0
-	if len(decrypted) > 0 {
-		trim = len(decrypted) - int(decrypted[len(decrypted)-1])
-	}
-	decrypted = decrypted[:trim]
-	// urldecode
-	deData, err := url.QueryUnescape(string(decrypted))
-	if err != nil {
-		return
-	}
-	decrypted = []byte(deData)
-	return
-}
-
 // JavaEncryptECB 适用于 Java SHA1PRNG 的加密
-func JavaEncryptECB(src []byte, key []byte) (encrypted []byte, err error) {
+func JavaEncryptECB(srcStr, keyStr string) (encryptedStr string, err error) {
+	var src, encrypted, key []byte
+
+	src = []byte(srcStr)
+	key = []byte(keyStr)
+
 	key, err = aesSha1prng(key, 128)
 	if err != nil {
 		return
@@ -92,12 +62,56 @@ func JavaEncryptECB(src []byte, key []byte) (encrypted []byte, err error) {
 		ciphers.Encrypt(encrypted[bs:be], plain[bs:be])
 	}
 	// 转大写形式16进制并base64编码
-	encrypted = encode(encrypted)
+	encryptedStr = string(encode(encrypted))
+	return
+}
+
+// JavaDecryptECB 适用于 Java SHA1PRNG 的解密
+func JavaDecryptECB(encryptedStr, keyStr string) (decryptedStr string, err error) {
+	var encrypted, key, decrypted []byte
+
+	encrypted = []byte(encryptedStr)
+	key = []byte(keyStr)
+
+	key, err = aesSha1prng(key, 128)
+	if err != nil {
+		return
+	}
+	key = generateKey(key)
+	// 分组秘钥
+	ciphers, err := aes.NewCipher(key)
+	if err != nil {
+		return
+	}
+	// 解码
+	encrypted, err = decode(encrypted)
+	if err != nil {
+		return
+	}
+	decrypted = make([]byte, len(encrypted))
+	for bs, be := 0, ciphers.BlockSize(); bs < len(encrypted); bs, be = bs+ciphers.BlockSize(), be+ciphers.BlockSize() {
+		ciphers.Decrypt(decrypted[bs:be], encrypted[bs:be])
+	}
+	trim := 0
+	if len(decrypted) > 0 {
+		trim = len(decrypted) - int(decrypted[len(decrypted)-1])
+	}
+	decrypted = decrypted[:trim]
+	// urldecode
+	decryptedStr, err = url.QueryUnescape(string(decrypted))
+	if err != nil {
+		return
+	}
 	return
 }
 
 // JavaEncryptCBC 适用于 Java SHA1PRNG 的加密
-func JavaEncryptCBC(src []byte, key []byte) (encrypted []byte, err error) {
+func JavaEncryptCBC(srcStr, keyStr string) (encryptedStr string, err error) {
+	var src, encrypted, key []byte
+
+	src = []byte(srcStr)
+	key = []byte(keyStr)
+
 	// 适配 Java SHA1PRNG 模块，生成秘钥
 	key, err = aesSha1prng(key, 128)
 	if err != nil {
@@ -124,12 +138,17 @@ func JavaEncryptCBC(src []byte, key []byte) (encrypted []byte, err error) {
 	// 执行加密
 	blockMode.CryptBlocks(encrypted, src)
 	// 转大写形式16进制并base64编码
-	encrypted = encode(encrypted)
+	encryptedStr = string(encode(encrypted))
 	return
 }
 
 // JavaDecryptCBC 适用于 Java SHA1PRNG 的解密
-func JavaDecryptCBC(encrypted []byte, key []byte) (decrypted []byte, err error) {
+func JavaDecryptCBC(encryptedStr, keyStr string) (decryptedStr string, err error) {
+	var encrypted, key, decrypted []byte
+
+	encrypted = []byte(encryptedStr)
+	key = []byte(keyStr)
+
 	// 适配 Java SHA1PRNG 模块，生成秘钥
 	key, err = aesSha1prng(key, 128)
 	if err != nil {
@@ -159,10 +178,9 @@ func JavaDecryptCBC(encrypted []byte, key []byte) (decrypted []byte, err error) 
 	// 去除补全码
 	decrypted = pkcs5UnPadding(decrypted)
 	// urldecode
-	deData, err := url.QueryUnescape(string(decrypted))
+	decryptedStr, err = url.QueryUnescape(string(decrypted))
 	if err != nil {
 		return
 	}
-	decrypted = []byte(deData)
 	return
 }
