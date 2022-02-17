@@ -1,8 +1,8 @@
 package utils
 
 import (
+	"log"
 	"math/rand"
-	"time"
 )
 
 const (
@@ -22,11 +22,13 @@ func Rand(length int, t string) string {
 		s = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	}
 	l := len(s)
-	rand.Seed(time.Now().UnixNano())
-	str := ""
-	for i := 0; i < length; i++ {
-		rands := rand.Intn(l)
-		str += string(s[rands])
+	b := make([]byte, length)
+	_, err := rand.Read(b)
+	if err != nil {
+		log.Panicf("get random number fail. %v", err)
 	}
-	return str
+	for i, v := range b {
+		b[i] = s[v%byte(l)]
+	}
+	return string(b)
 }
