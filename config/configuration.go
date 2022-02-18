@@ -18,10 +18,10 @@ import (
 	"github.com/spf13/viper"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
-// web 应用基础配置
-
+// ConfigurationReadOnly web 应用基础配置
 type ConfigurationReadOnly interface {
 	GetActive() string
 	GetUrl() string
@@ -32,22 +32,34 @@ type ConfigurationReadOnly interface {
 	GetSock() string
 	GetSwaggerPort() string
 	GetScheme() string
+	GetLogFile() string
+	GetRedisUse() string
+	GetCryptAesToken() string
+	GetCryptRsaPriv() string
+	GetCrosAllowOrigin() []string
+	GetCrosAllowHeaders() string
 	GetEs() []string
 	GetMysql() map[string]IMysql
 	GetRedis() IRedis
 }
 
 type Configuration struct {
-	Active      string `yaml:"active"`
-	Domain      string `yaml:"domain"`
-	Port        string `yaml:"port"`
-	Scheme      string `yaml:"scheme"`
-	Sock        string `yaml:"sock"`
-	Timezone    string `yaml:"timezone"`
-	SwaggerPort string `yaml:"swagger.port"`
-	Es          string `yaml:"es"`
-	Mysql       string `yaml:"mysql"`
-	Redis       string `yaml:"redis"`
+	Active           string `yaml:"active"`
+	Domain           string `yaml:"domain"`
+	Port             string `yaml:"port"`
+	Scheme           string `yaml:"scheme"`
+	Sock             string `yaml:"sock"`
+	Timezone         string `yaml:"timezone"`
+	SwaggerPort      string `yaml:"swagger.port"`
+	Es               string `yaml:"es"`
+	Mysql            string `yaml:"mysql"`
+	Redis            string `yaml:"redis"`
+	RedisUse         string `yaml:"redis_use"`
+	CryptAesToken    string `yaml:"crypt.aes.token"`
+	CryptRsaPriv     string `yaml:"crypt.rsa.priv"`
+	LogFile          string `yaml:"logfile"`
+	CrosAllowOrigin  string `yaml:"cros.allow_origin"`
+	CrosAllowHeaders string `yaml:"cros.allow_headers"`
 }
 
 func (c Configuration) GetUrl() string {
@@ -84,6 +96,10 @@ func (c Configuration) GetActive() string {
 	return viper.GetString(c.Active)
 }
 
+func (c Configuration) GetRedisUse() string {
+	return viper.GetString(c.RedisUse)
+}
+
 func (c Configuration) GetDomain() string {
 	return viper.GetString(c.Domain)
 }
@@ -98,6 +114,26 @@ func (c Configuration) GetSwaggerPort() string {
 
 func (c Configuration) GetScheme() string {
 	return viper.GetString(c.Scheme)
+}
+
+func (c Configuration) GetLogFile() string {
+	return viper.GetString(c.LogFile)
+}
+
+func (c Configuration) GetCryptAesToken() string {
+	return viper.GetString(c.CryptAesToken)
+}
+
+func (c Configuration) GetCryptRsaPriv() string {
+	return viper.GetString(c.CryptRsaPriv)
+}
+
+func (c Configuration) GetCrosAllowOrigin() []string {
+	return viper.GetStringSlice(c.CrosAllowOrigin)
+}
+
+func (c Configuration) GetCrosAllowHeaders() string {
+	return strings.Join(viper.GetStringSlice(c.CrosAllowHeaders), ",")
 }
 
 // mysqlAlone mysql配置实例

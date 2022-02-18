@@ -15,6 +15,7 @@ import (
 )
 
 func TestCovertConfiguration(t *testing.T) {
+	t.Log(Config.GetCrosAllowHeaders())
 	t.Log(Config.GetUrl())
 	t.Log(Config.GetSwaggerUrl())
 	t.Log(Config.GetActive())
