@@ -64,19 +64,26 @@ func (b *Bootstrapper) SetupPprof() {
 // SetupLogging 设置请求日志
 func (b *Bootstrapper) SetupLogging() {
 	pathToAccessLog := c.GetLogFile()
-	log.Print(pathToAccessLog)
-	w, err := rotatelogs.New(
-		pathToAccessLog,
-		rotatelogs.WithMaxAge(24*time.Hour),
-		rotatelogs.WithRotationTime(time.Hour))
-	if err != nil {
-		panic(err)
+	var w *rotatelogs.RotateLogs
+	var err error
+
+	if pathToAccessLog != "" {
+		log.Print(pathToAccessLog)
+		w, err = rotatelogs.New(
+			pathToAccessLog,
+			rotatelogs.WithMaxAge(24*time.Hour),
+			rotatelogs.WithRotationTime(time.Hour))
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	// Initialize a new access log middleware.
 	var ioWriter io.Writer
 	// 生产只输出到文件
-	if c.GetActive() == consts.EnvProduct {
+	if pathToAccessLog == "" {
+		ioWriter = os.Stdout
+	} else if c.GetActive() == consts.EnvProduct {
 		ioWriter = bufio.NewWriter(w)
 	} else {
 		// 非生产也输出到控制台
