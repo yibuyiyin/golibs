@@ -2,7 +2,7 @@ package identity
 
 import (
 	"fmt"
-	"gitee.com/itsos/golibs/v2/framework/ciris/bootstrap"
+	"gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
 	"github.com/google/uuid"
 	"github.com/kataras/golog"
 	"github.com/kataras/iris/v12"

@@ -2,7 +2,7 @@ package cros
 
 import (
 	"gitee.com/itsos/golibs/v2/config"
-	"gitee.com/itsos/golibs/v2/framework/ciris/bootstrap"
+	"gitee.com/itsos/golibs/v2/framework/iris/bootstrap"
 	"gitee.com/itsos/golibs/v2/utils/array"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/accesslog"
