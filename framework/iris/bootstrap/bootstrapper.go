@@ -82,7 +82,7 @@ func (b *Bootstrapper) SetupLogging() {
 	var ioWriter io.Writer
 	// 生产只输出到文件
 	if pathToAccessLog == "" {
-		ioWriter = os.Stdout
+		ioWriter = io.MultiWriter(os.Stdout)
 	} else if c.GetActive() == consts.EnvProduct {
 		ioWriter = bufio.NewWriter(w)
 	} else {
