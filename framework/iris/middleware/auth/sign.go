@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"gitee.com/itsos/golibs/v2/cerrors"
@@ -26,7 +27,7 @@ func CheckSign(b *bootstrap.Bootstrapper) {
 			contentType := ctx.GetContentTypeRequested()
 			if contentType == context.ContentFormMultipartHeaderValue ||
 				contentType == context.ContentFormHeaderValue {
-				mJson, _ = json.Marshal(ctx.FormValues())
+				mJson = toJson(ctx.FormValues())
 			} else {
 				body, _ := ctx.GetBody()
 				uParams := ctx.URLParams()
@@ -41,7 +42,7 @@ func CheckSign(b *bootstrap.Bootstrapper) {
 				for k, v := range uParams {
 					params[k] = v
 				}
-				mJson, _ = json.Marshal(params)
+				mJson = toJson(params)
 			}
 			data := filter(mJson)
 
@@ -82,6 +83,14 @@ func CheckSign(b *bootstrap.Bootstrapper) {
 			ctx.Next()
 		}
 	})
+}
+
+func toJson(o interface{}) []byte {
+	bf := bytes.NewBuffer([]byte{})
+	jsonEncoder := json.NewEncoder(bf)
+	jsonEncoder.SetEscapeHTML(false)
+	jsonEncoder.Encode(o)
+	return bytes.Trim(bf.Bytes(), "\n")
 }
 
 func forbidden(ctx iris.Context) {
