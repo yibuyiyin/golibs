@@ -27,7 +27,10 @@ func CheckSign(b *bootstrap.Bootstrapper) {
 			contentType := ctx.GetContentTypeRequested()
 			if contentType == context.ContentFormMultipartHeaderValue ||
 				contentType == context.ContentFormHeaderValue {
-				mJson = toJson(ctx.FormValues())
+				res := ctx.FormValues()
+				if len(res) > 0 {
+					mJson = toJson(res)
+				}
 			} else {
 				body, _ := ctx.GetBody()
 				uParams := ctx.URLParams()
@@ -42,7 +45,9 @@ func CheckSign(b *bootstrap.Bootstrapper) {
 				for k, v := range uParams {
 					params[k] = v
 				}
-				mJson = toJson(params)
+				if len(params) > 0 {
+					mJson = toJson(params)
+				}
 			}
 			data := filter(mJson)
 
