@@ -81,23 +81,22 @@ func TestNewEs2(t *testing.T) {
 		log.Println(res)
 	})
 
-	t.Run("执行", func(t *testing.T) {
+	es, err := elasticsearch.NewDefaultClient()
+	if err != nil {
+		log.Fatalf("Error creating the client: %s", err)
+	}
 
-		log.SetFlags(0)
+	var (
+		r  map[string]interface{}
+		wg sync.WaitGroup
+	)
 
-		var (
-			r  map[string]interface{}
-			wg sync.WaitGroup
-		)
-
+	log.SetFlags(0)
+	t.Run("存数据", func(t *testing.T) {
 		// Initialize a client with the default settings.
 		//
 		// An `ELASTICSEARCH_URL` environment variable will be used when exported.
 		//
-		es, err := elasticsearch.NewDefaultClient()
-		if err != nil {
-			log.Fatalf("Error creating the client: %s", err)
-		}
 
 		// 1. Get cluster info
 		//
@@ -119,9 +118,9 @@ func TestNewEs2(t *testing.T) {
 		log.Printf("Server: %s", r["version"].(map[string]interface{})["number"])
 		log.Println(strings.Repeat("~", 37))
 
-		// 2. Index documents concurrently
-		//
-		for i, title := range []string{"Test One", "Test Two"} {
+		//2. Index documents concurrently
+
+		for i, title := range []string{"中国人pk美国人", "中国人pk韩国人"} {
 			wg.Add(1)
 
 			go func(i int, title string) {
@@ -135,10 +134,11 @@ func TestNewEs2(t *testing.T) {
 
 				// Set up the request object.
 				req := esapi.IndexRequest{
-					Index:      "test",
+					Index:      "canal",
 					DocumentID: strconv.Itoa(i + 1),
-					Body:       strings.NewReader(b.String()),
-					Refresh:    "true",
+					//OpType: "_doc",
+					Body:    strings.NewReader(b.String()),
+					Refresh: "true",
 				}
 
 				// Perform the request with the client.
@@ -165,7 +165,8 @@ func TestNewEs2(t *testing.T) {
 		wg.Wait()
 
 		log.Println(strings.Repeat("-", 37))
-
+	})
+	t.Run("查数据", func(t *testing.T) {
 		// 3. Search for the indexed documents
 		//
 		// Build the request body.
@@ -173,7 +174,7 @@ func TestNewEs2(t *testing.T) {
 		query := map[string]interface{}{
 			"query": map[string]interface{}{
 				"match": map[string]interface{}{
-					"title": "test",
+					"title": "中国",
 				},
 			},
 		}
@@ -182,9 +183,10 @@ func TestNewEs2(t *testing.T) {
 		}
 
 		// Perform the search request.
-		res, err = es.Search(
+		res, err := es.Search(
 			es.Search.WithContext(context.Background()),
-			es.Search.WithIndex("test"),
+			es.Search.WithIndex("canal"),
+			es.Search.WithDocumentType("_doc"),
 			es.Search.WithBody(&buf),
 			es.Search.WithTrackTotalHits(true),
 			es.Search.WithPretty(),
