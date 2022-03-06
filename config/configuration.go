@@ -37,6 +37,7 @@ type ConfigurationReadOnly interface {
 	GetCryptAesToken() string
 	GetCryptRsaPriv() string
 	GetCrosAllowOrigin() []string
+	GetSignatureExclude() []string
 	GetCrosAllowHeaders() string
 	GetEs() []string
 	GetMysql() map[string]IMysql
@@ -60,6 +61,7 @@ type Configuration struct {
 	LogFile          string `yaml:"logfile"`
 	CrosAllowOrigin  string `yaml:"cros.allow_origin"`
 	CrosAllowHeaders string `yaml:"cros.allow_headers"`
+	SignatureExclude string `yaml:"signature.exclude"`
 }
 
 func (c Configuration) GetUrl() string {
@@ -134,6 +136,10 @@ func (c Configuration) GetCrosAllowOrigin() []string {
 
 func (c Configuration) GetCrosAllowHeaders() string {
 	return strings.Join(viper.GetStringSlice(c.CrosAllowHeaders), ",")
+}
+
+func (c Configuration) GetSignatureExclude() []string {
+	return viper.GetStringSlice(c.SignatureExclude)
 }
 
 // mysqlAlone mysql配置实例

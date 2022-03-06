@@ -13,6 +13,7 @@ import (
 	"github.com/kataras/golog"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -23,6 +24,10 @@ import (
 func CheckSign(b *bootstrap.Bootstrapper) {
 	b.UseGlobal(func(ctx iris.Context) {
 		if ctx.GetStatusCode() < iris.StatusInternalServerError && ctx.Method() != "OPTIONS" {
+			if SignExclude(ctx) {
+				ctx.Next()
+				return
+			}
 			var mJson []byte
 			contentType := ctx.GetContentTypeRequested()
 			if contentType == context.ContentFormMultipartHeaderValue ||
@@ -88,6 +93,20 @@ func CheckSign(b *bootstrap.Bootstrapper) {
 			ctx.Next()
 		}
 	})
+}
+
+func SignExclude(ctx iris.Context) bool {
+	ruleSign := config.Config.GetSignatureExclude()
+	if len(ruleSign) == 0 {
+		return false
+	}
+	uri := ctx.Request().RequestURI
+	for _, r := range ruleSign {
+		if is, _ := regexp.MatchString(r, uri); is {
+			return true
+		}
+	}
+	return false
 }
 
 func toJson(o interface{}) []byte {
