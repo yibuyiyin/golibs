@@ -45,7 +45,11 @@ func getReferer(ctx iris.Context) (referer string) {
 			return ""
 		}
 	}
-	referer = strings.Trim(referer, "/")
+	start := strings.Index(referer, ":") + 3
+	end := strings.Index(referer[start:], "/")
+	if end > -1 {
+		referer = referer[:start+end]
+	}
 	if is, _ := array.InArray(referer, cros); is {
 		return referer
 	}
