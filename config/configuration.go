@@ -12,13 +12,14 @@ package config
 
 import (
 	"fmt"
+	"reflect"
+	"strconv"
+	"strings"
+
 	"gitee.com/itsos/golibs/v2/global/variable"
 	"gitee.com/itsos/golibs/v2/utils/reflects"
 	"github.com/goinggo/mapstructure"
 	"github.com/spf13/viper"
-	"reflect"
-	"strconv"
-	"strings"
 )
 
 // ConfigurationReadOnly web 应用基础配置
@@ -33,6 +34,7 @@ type ConfigurationReadOnly interface {
 	GetSwaggerPort() string
 	GetScheme() string
 	GetLogFile() string
+	GetIsSetupView() bool
 	GetRedisUse() string
 	GetCryptAesToken() string
 	GetCryptRsaPriv() string
@@ -59,6 +61,7 @@ type Configuration struct {
 	CryptAesToken    string `yaml:"crypt.aes.token"`
 	CryptRsaPriv     string `yaml:"crypt.rsa.priv"`
 	LogFile          string `yaml:"logfile"`
+	IsSetupView      string `yaml:"is_setup_view"`
 	CrosAllowOrigin  string `yaml:"cros.allow_origin"`
 	CrosAllowHeaders string `yaml:"cros.allow_headers"`
 	SignatureExclude string `yaml:"signature.exclude"`
@@ -120,6 +123,10 @@ func (c Configuration) GetScheme() string {
 
 func (c Configuration) GetLogFile() string {
 	return viper.GetString(c.LogFile)
+}
+
+func (c Configuration) GetIsSetupView() bool {
+	return viper.GetBool(c.IsSetupView)
 }
 
 func (c Configuration) GetCryptAesToken() string {

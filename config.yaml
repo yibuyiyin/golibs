@@ -12,6 +12,9 @@ sock: /tmp/go.sock
 # 时区
 timezone: Asia/Shanghai
 
+# framework.bootstrap 设置静态目录
+is_setup_view: true
+
 swagger:
   port: 9090
 
@@ -30,7 +33,7 @@ signature:
     - /admin/files
 
 # 日志
-logfile: /tmp/log/clsports_access_log.%Y%m%d%H%M
+logfile: /tmp/log/golibs_access_log.%Y%m%d%H%M
 
 # 秘钥
 crypt:

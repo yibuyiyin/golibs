@@ -2,6 +2,13 @@ package bootstrap
 
 import (
 	"bufio"
+	"io"
+	"log"
+	"net"
+	"os"
+	"regexp"
+	"time"
+
 	"gitee.com/itsos/golibs/v2/cerrors"
 	"gitee.com/itsos/golibs/v2/config"
 	"gitee.com/itsos/golibs/v2/global/consts"
@@ -15,12 +22,6 @@ import (
 	"github.com/kataras/iris/v12/middleware/pprof"
 	recover2 "github.com/kataras/iris/v12/middleware/recover"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
-	"io"
-	"log"
-	"net"
-	"os"
-	"regexp"
-	"time"
 )
 
 var c = config.Config
@@ -164,7 +165,7 @@ func (b *Bootstrapper) SetupErrorHandlers() {
 		res.SetCode(ctx.GetStatusCode())
 		res.SetMessage(iris.StatusText(ctx.GetStatusCode()))
 
-		if isOutJson(ctx) {
+		if isOutJson(ctx) || !c.GetIsSetupView() {
 			ctx.JSON(res)
 			return
 		}
@@ -210,8 +211,10 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	// 设置参数验证器
 	b.SetupValidator()
 
-	// 设置golang views目录
-	b.SetupViews(variable.BasePath + "/web/views")
+	if c.GetIsSetupView() {
+		// 设置golang views目录
+		b.SetupViews(variable.BasePath + "/web/views")
+	}
 
 	// 设置session
 	//hashKey := securecookie.GenerateRandomKey(64)
@@ -221,10 +224,12 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	// 设置错误捕获
 	b.SetupErrorHandlers()
 
-	// static files
-	//b.Favicon(StaticAssets + Favicon)
-	router.DefaultDirOptions.IndexName = "/index.html"
-	b.HandleDir("public", iris.Dir(StaticAssets), router.DefaultDirOptions)
+	if c.GetIsSetupView() {
+		// static files
+		//b.Favicon(StaticAssets + Favicon)
+		router.DefaultDirOptions.IndexName = "/index.html"
+		b.HandleDir("public", iris.Dir(StaticAssets), router.DefaultDirOptions)
+	}
 	b.Use(recover2.New())
 	//b.Use(b.Sessions.Handler())
 
